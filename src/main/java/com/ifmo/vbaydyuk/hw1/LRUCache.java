@@ -1,3 +1,5 @@
+package com.ifmo.vbaydyuk.hw1;
+
 import com.sun.istack.internal.Nullable;
 
 import javax.annotation.Nonnull;

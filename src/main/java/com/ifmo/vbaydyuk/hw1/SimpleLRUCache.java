@@ -1,3 +1,5 @@
+package com.ifmo.vbaydyuk.hw1;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;

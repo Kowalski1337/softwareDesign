@@ -1,3 +1,5 @@
+package com.ifmo.vbaydyuk.hw1;
+
 import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 
 import javax.annotation.Nonnull;
