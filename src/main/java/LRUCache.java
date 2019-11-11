@@ -10,6 +10,8 @@ public interface LRUCache<K, V> {
 
     void put(@Nonnull K key, @Nonnull V value);
 
+    void remove(@Nonnull K key);
+
     int size();
 
     default boolean isEmpty() {

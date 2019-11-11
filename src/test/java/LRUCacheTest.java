@@ -221,4 +221,48 @@ class LRUCacheTest {
                 "7", "7"
         ), lruCache.getAsMap());
     }
+
+
+    @Test
+    void testRemove() {
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+
+        lruCache.remove("1");
+
+        assertFalse(lruCache.containsKey("1"));
+        assertEquals(4, lruCache.size());
+    }
+
+    @Test
+    void testRemoveAll() {
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+
+        lruCache.remove("1");
+        lruCache.remove("2");
+        lruCache.remove("3");
+        lruCache.remove("4");
+        lruCache.remove("5");
+
+        testMap.keySet().forEach(key -> assertFalse(lruCache.containsKey(key)));
+
+        assertTrue(lruCache.isEmpty());
+    }
+
+    @Test
+    void testSingleRemovingLeastRecentlyUsed() {
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+
+        lruCache.remove("1");
+
+        assertEquals("2", lruCache.leastRecentlyUsed());
+    }
+
+    @Test
+    void testSingleRemovingMostRecentlyUsed() {
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+
+        lruCache.remove("5");
+
+        assertEquals("4", lruCache.mostRecentlyUsed());
+    }
 }

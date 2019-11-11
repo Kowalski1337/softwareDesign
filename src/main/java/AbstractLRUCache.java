@@ -51,6 +51,14 @@ public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
     }
 
     @Override
+    public void remove(@Nonnull K key) {
+        int oldSize = size();
+        doRemove(key);
+        assert oldSize == 0 || oldSize == size() + 1 : "Size should be decreased by one after removing";
+        assert justGet(key) == null : "Element should be removed";
+    }
+
+    @Override
     public V get(@Nonnull K key) {
         int oldSize = size();
         V res = doGet(key);
@@ -70,9 +78,11 @@ public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
 
     abstract protected int doSize();
 
-    abstract protected void doPut(@Nonnull K key, V value);
+    abstract protected void doPut(@Nonnull K key, @Nonnull V value);
 
     abstract protected V doGet(@Nonnull K key);
+
+    abstract protected void doRemove(@Nonnull K key);
 
     @VisibleForTesting
     abstract protected K leastRecentlyUsed();

@@ -69,6 +69,30 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     }
 
     @Override
+    protected void doRemove(@Nonnull K key) {
+        Node<K, V> toRemove = cache.remove(key);
+        if (toRemove == null) return;
+
+        currentSize--;
+
+        if (currentSize == 0) {
+            mostRecentlyUsed = null;
+            leastRecentlyUsed = null;
+            return;
+        }
+
+        if (mostRecentlyUsed.key == toRemove.key) {
+            mostRecentlyUsed.prev.next = null;
+            mostRecentlyUsed = mostRecentlyUsed.prev;
+        }
+
+        if (leastRecentlyUsed.key == toRemove.key) {
+            leastRecentlyUsed.next.prev = null;
+            leastRecentlyUsed = leastRecentlyUsed.next;
+        }
+    }
+
+    @Override
     protected K leastRecentlyUsed() {
         return leastRecentlyUsed == null ? null : leastRecentlyUsed.key;
     }
