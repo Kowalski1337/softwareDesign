@@ -3,6 +3,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -10,28 +13,29 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LRUCacheTest {
-
-    private static final Map<String, String> testMap = ImmutableMap.of(
+    private static final Map<String, String> TEST_MAP = ImmutableMap.of(
             "1", "1",
             "2", "2",
             "3", "3",
             "4", "4",
             "5", "5"
     );
+    private static final int TOO_BIG_CAPACITY = 100_000;
+    private static final int NEGATIVE_CAPACITY = -1;
 
     @Test
     void testCapacityRange() {
-        assertThrows(AssertionError.class, () -> new SimpleLRUCache<>(-1));
-        assertThrows(AssertionError.class, () -> new SimpleLRUCache<>(100000));
+        assertThrows(AssertionError.class, () -> new SimpleLRUCache<>(NEGATIVE_CAPACITY));
+        assertThrows(AssertionError.class, () -> new SimpleLRUCache<>(TOO_BIG_CAPACITY));
     }
 
     @Test
     void testPut() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         Map<String, String> actual = lruCache.getAsMap();
 
-        assertEquals(testMap, actual);
+        assertEquals(TEST_MAP, actual);
     }
 
     @Test
@@ -40,7 +44,7 @@ class LRUCacheTest {
 
         assertEquals(0, lruCache.size());
 
-        testMap.forEach(lruCache::put);
+        TEST_MAP.forEach(lruCache::put);
 
         lruCache.put("6", "6");
         lruCache.put("1", "2");
@@ -54,7 +58,7 @@ class LRUCacheTest {
 
         assertTrue(lruCache.isEmpty());
 
-        testMap.forEach(lruCache::put);
+        TEST_MAP.forEach(lruCache::put);
         lruCache.put("6", "6");
         lruCache.put("1", "2");
 
@@ -64,7 +68,7 @@ class LRUCacheTest {
 
     @Test
     void testContains() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         assertTrue(lruCache.containsKey("1"));
         assertTrue(lruCache.containsKey("5"));
@@ -73,16 +77,16 @@ class LRUCacheTest {
 
     @Test
     void testGet() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
-        testMap.keySet().forEach(key -> assertEquals(testMap.get(key), lruCache.get(key)));
+        TEST_MAP.keySet().forEach(key -> assertEquals(TEST_MAP.get(key), lruCache.get(key)));
 
         assertNull(lruCache.get("6"));
     }
 
     @Test
     void testRewriting() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         String newValue = "New value";
         String keyToRewrite = "1";
@@ -94,7 +98,7 @@ class LRUCacheTest {
 
     @Test
     void testLeastRecentlyUsedAfterSingleAddition() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>();
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<String, String>();
 
         lruCache.put("1", "");
 
@@ -103,7 +107,7 @@ class LRUCacheTest {
 
     @Test
     void testLeastRecentlyUsedAfterMultipleAdditions() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         assertEquals("1", lruCache.leastRecentlyUsed());
     }
@@ -111,7 +115,7 @@ class LRUCacheTest {
 
     @Test
     void testLeastRecentlyUsedAfterSingleChangingLeastRecentlyUsed() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.containsKey("1");
 
@@ -120,7 +124,7 @@ class LRUCacheTest {
 
     @Test
     void testLeastRecentlyUsedAfterMultipleChangingLeastRecentlyUsed() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.containsKey("1");
         lruCache.containsKey("1");
@@ -146,14 +150,14 @@ class LRUCacheTest {
 
     @Test
     void testMostRecentlyUsedAfterMultipleAdditions() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         assertEquals("5", lruCache.mostRecentlyUsed());
     }
 
     @Test
     void testMostRecentlyUsedAfterSingleChangingMostRecentlyUsed() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.containsKey("4");
 
@@ -162,7 +166,7 @@ class LRUCacheTest {
 
     @Test
     void testMostRecentlyUsedAfterMultipleChangingMostRecentlyUsed() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.containsKey("1");
         lruCache.containsKey("1");
@@ -177,11 +181,11 @@ class LRUCacheTest {
 
     @Test
     void testAddingElementWithExistedKeyToFullCache() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap, 5);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP, 5);
 
         lruCache.put("1", "vovse ne odin");
 
-        assertEquals(testMap.keySet(), lruCache.getAsMap().keySet());
+        assertEquals(TEST_MAP.keySet(), lruCache.getAsMap().keySet());
     }
 
     @Test
@@ -189,9 +193,9 @@ class LRUCacheTest {
         LRUCache<String, String> lruCache = new SimpleLRUCache<>(5);
         lruCache.put("0", "Remove me");
 
-        testMap.forEach(lruCache::put);
+        TEST_MAP.forEach(lruCache::put);
 
-        assertEquals(testMap, lruCache.getAsMap());
+        assertEquals(TEST_MAP, lruCache.getAsMap());
     }
 
     @Test
@@ -200,32 +204,32 @@ class LRUCacheTest {
         lruCache.put("0", "Remove me");
         lruCache.put("-1", "Remove me to");
 
-        testMap.forEach(lruCache::put);
+        TEST_MAP.forEach(lruCache::put);
 
-        assertEquals(testMap, lruCache.getAsMap());
+        assertEquals(TEST_MAP, lruCache.getAsMap());
     }
 
     @Test
     void testDeletingLeastRecentlyUsedAfterMultipleChanging() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap, 5);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP, 5);
 
         lruCache.put("6", "6");
         lruCache.put("2", "odin");
         lruCache.put("7", "7");
 
-        assertEquals(ImmutableMap.of(
-                "2", "odin",
-                "4", "4",
-                "5", "5",
-                "6", "6",
-                "7", "7"
-        ), lruCache.getAsMap());
+        assertThat(lruCache.getAsMap(), allOf(
+                hasEntry("2", "odin"),
+                hasEntry("4", "4"),
+                hasEntry("5", "5"),
+                hasEntry("6", "6"),
+                hasEntry("7", "7")
+        ));
     }
 
 
     @Test
     void testRemove() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.remove("1");
 
@@ -235,7 +239,7 @@ class LRUCacheTest {
 
     @Test
     void testRemoveAll() {
-        LRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        LRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.remove("1");
         lruCache.remove("2");
@@ -243,14 +247,14 @@ class LRUCacheTest {
         lruCache.remove("4");
         lruCache.remove("5");
 
-        testMap.keySet().forEach(key -> assertFalse(lruCache.containsKey(key)));
+        TEST_MAP.keySet().forEach(key -> assertFalse(lruCache.containsKey(key)));
 
         assertTrue(lruCache.isEmpty());
     }
 
     @Test
     void testSingleRemovingLeastRecentlyUsed() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.remove("1");
 
@@ -259,7 +263,7 @@ class LRUCacheTest {
 
     @Test
     void testSingleRemovingMostRecentlyUsed() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(testMap);
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>(TEST_MAP);
 
         lruCache.remove("5");
 

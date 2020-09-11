@@ -5,26 +5,25 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUCache<K, V> {
-
     private final Map<K, Node<K, V>> cache = new HashMap<>();
     private Node<K, V> leastRecentlyUsed = null;
     private Node<K, V> mostRecentlyUsed = null;
     private int currentSize = 0;
 
-    public SimpleLRUCache() {
+    SimpleLRUCache() {
 
     }
 
-    public SimpleLRUCache(int capacity) {
+    SimpleLRUCache(int capacity) {
         super(capacity);
     }
 
-    public SimpleLRUCache(@Nonnull Map<K, V> map, int capacity) {
+    SimpleLRUCache(@Nonnull Map<K, V> map, int capacity) {
         super(capacity);
         map.forEach(super::put);
     }
 
-    public SimpleLRUCache(@Nonnull Map<K, V> map) {
+    SimpleLRUCache(@Nonnull Map<K, V> map) {
         map.forEach(super::put);
     }
 
@@ -34,13 +33,13 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     }
 
     @Override
-    protected void doPut(@Nonnull K key, V value) {
+    protected void doPut(@Nonnull K key, @Nonnull V value) {
         Node<K, V> oldValue = cache.get(key);
         if (oldValue != null) {
             oldValue.value = value;
             adjustMRU(oldValue);
         } else {
-            Node<K, V> newMSU = new Node<>(key, value, mostRecentlyUsed, null);
+            Node<K, V> newMSU = new Node<>(key, value, mostRecentlyUsed);
             if (mostRecentlyUsed != null) mostRecentlyUsed.next = newMSU;
             cache.put(key, newMSU);
             mostRecentlyUsed = newMSU;
@@ -133,7 +132,7 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
         return cache.values().stream().collect(Collectors.toMap(Node::getKey, Node::getValue));
     }
 
-    private final class Node<K, V> {
+    private static final class Node<K, V> {
         private K key;
         private V value;
         private Node<K, V> prev;
@@ -147,11 +146,10 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
             return value;
         }
 
-        public Node(K key, V value, Node<K, V> prev, Node<K, V> next) {
+        private Node(@Nonnull K key, @Nonnull V value, Node<K, V> prev) {
             this.key = key;
             this.value = value;
             this.prev = prev;
-            this.next = next;
         }
     }
 }

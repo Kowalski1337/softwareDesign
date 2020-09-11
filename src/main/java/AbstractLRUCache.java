@@ -5,19 +5,15 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
 
-    private static final int MIN_CAPACITY = 1;
-    private static final int MAX_CAPACITY = 10000;
+    final int capacity;
 
-    protected final int capacity;
-
-
-    protected AbstractLRUCache(int capacity) {
+    AbstractLRUCache(int capacity) {
         assert capacity >= MIN_CAPACITY && capacity <= MAX_CAPACITY
                 : String.format("Capacity should be in range (%d, %d)", MIN_CAPACITY, MAX_CAPACITY);
         this.capacity = capacity;
     }
 
-    protected AbstractLRUCache() {
+    AbstractLRUCache() {
         this(MAX_CAPACITY);
     }
 
