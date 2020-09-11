@@ -98,7 +98,7 @@ class LRUCacheTest {
 
     @Test
     void testLeastRecentlyUsedAfterSingleAddition() {
-        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<String, String>();
+        AbstractLRUCache<String, String> lruCache = new SimpleLRUCache<>();
 
         lruCache.put("1", "");
 
