@@ -6,11 +6,15 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 public interface LRUCache<K, V> {
+    int MIN_CAPACITY = 1;
+    int MAX_CAPACITY = 10000;
 
     @Nullable
     V get(@Nonnull K key);
 
     void put(@Nonnull K key, @Nonnull V value);
+
+    void remove(@Nonnull K key);
 
     int size();
 

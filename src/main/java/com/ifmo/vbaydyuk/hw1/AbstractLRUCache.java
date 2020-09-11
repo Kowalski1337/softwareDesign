@@ -7,19 +7,15 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
 
-    private static final int MIN_CAPACITY = 1;
-    private static final int MAX_CAPACITY = 10000;
+    final int capacity;
 
-    protected final int capacity;
-
-
-    protected AbstractLRUCache(int capacity) {
+    AbstractLRUCache(int capacity) {
         assert capacity >= MIN_CAPACITY && capacity <= MAX_CAPACITY
                 : String.format("Capacity should be in range (%d, %d)", MIN_CAPACITY, MAX_CAPACITY);
         this.capacity = capacity;
     }
 
-    protected AbstractLRUCache() {
+    AbstractLRUCache() {
         this(MAX_CAPACITY);
     }
 
@@ -53,6 +49,14 @@ public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
     }
 
     @Override
+    public void remove(@Nonnull K key) {
+        int oldSize = size();
+        doRemove(key);
+        assert oldSize == 0 || oldSize == size() + 1 : "Size should be decreased by one after removing";
+        assert justGet(key) == null : "Element should be removed";
+    }
+
+    @Override
     public V get(@Nonnull K key) {
         int oldSize = size();
         V res = doGet(key);
@@ -72,9 +76,11 @@ public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
 
     abstract protected int doSize();
 
-    abstract protected void doPut(@Nonnull K key, V value);
+    abstract protected void doPut(@Nonnull K key, @Nonnull V value);
 
     abstract protected V doGet(@Nonnull K key);
+
+    abstract protected void doRemove(@Nonnull K key);
 
     @VisibleForTesting
     abstract protected K leastRecentlyUsed();
