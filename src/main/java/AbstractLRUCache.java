@@ -3,17 +3,18 @@ import com.google.gwt.thirdparty.guava.common.annotations.VisibleForTesting;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@SuppressWarnings("WeakerAccess")
 public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
 
-    final int capacity;
+    protected final int capacity;
 
-    AbstractLRUCache(int capacity) {
+    protected AbstractLRUCache(int capacity) {
         assert capacity >= MIN_CAPACITY && capacity <= MAX_CAPACITY
                 : String.format("Capacity should be in range (%d, %d)", MIN_CAPACITY, MAX_CAPACITY);
         this.capacity = capacity;
     }
 
-    AbstractLRUCache() {
+    protected AbstractLRUCache() {
         this(MAX_CAPACITY);
     }
 
