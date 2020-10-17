@@ -37,7 +37,7 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     protected void doPut(@Nonnull K key, @Nonnull V value) {
         Node<K, V> existingValue = cache.get(key);
         if (existingValue != null) {
-            existingValue.value = value;
+            existingValue.setValue(value);
             updateMRU(existingValue);
         } else {
             Node<K, V> newMSU = new Node<>(key, value, mostRecentlyUsed);
@@ -59,6 +59,7 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     }
 
     @Override
+    @Nullable
     protected V doGet(@Nonnull K key) {
         Node<K, V> res = cache.get(key);
         if (res == null) return null;
@@ -106,7 +107,7 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     @Override
     protected V justGet(@Nonnull K key) {
         Node<K, V> res = cache.get(key);
-        return res == null ? null : res.value;
+        return res == null ? null : res.getValue();
     }
 
     private void updateMRU(Node<K, V> newMRU) {
@@ -134,7 +135,7 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     }
 
     private static final class Node<K, V> {
-        private K key;
+        private final K key;
         private V value;
         private Node<K, V> prev;
         private Node<K, V> next;
@@ -145,6 +146,10 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
 
         private V getValue() {
             return value;
+        }
+
+        public void setValue(V value) {
+            this.value = value;
         }
 
         private Node(@Nonnull K key, @Nonnull V value, Node<K, V> prev) {

@@ -56,6 +56,7 @@ public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
     }
 
     @Override
+    @Nullable
     public V get(@Nonnull K key) {
         int oldSize = size();
         V res = doGet(key);
@@ -77,14 +78,13 @@ public abstract class AbstractLRUCache<K, V> implements LRUCache<K, V> {
 
     abstract protected void doPut(@Nonnull K key, @Nonnull V value);
 
+    @Nullable
     abstract protected V doGet(@Nonnull K key);
 
     abstract protected void doRemove(@Nonnull K key);
 
-    @VisibleForTesting
     abstract protected K leastRecentlyUsed();
 
-    @VisibleForTesting
     abstract protected K mostRecentlyUsed();
 
     @Nullable
