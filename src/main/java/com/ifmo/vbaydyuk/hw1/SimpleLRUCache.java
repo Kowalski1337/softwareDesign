@@ -6,26 +6,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("WeakerAccess")
 public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUCache<K, V> {
     private final Map<K, Node<K, V>> cache = new HashMap<>();
     private Node<K, V> leastRecentlyUsed = null;
     private Node<K, V> mostRecentlyUsed = null;
     private int currentSize = 0;
 
-    SimpleLRUCache() {
+    public SimpleLRUCache() {
 
     }
 
-    SimpleLRUCache(int capacity) {
+    public SimpleLRUCache(int capacity) {
         super(capacity);
     }
 
-    SimpleLRUCache(@Nonnull Map<K, V> map, int capacity) {
+    public SimpleLRUCache(@Nonnull Map<K, V> map, int capacity) {
         super(capacity);
         map.forEach(super::put);
     }
 
-    SimpleLRUCache(@Nonnull Map<K, V> map) {
+    public SimpleLRUCache(@Nonnull Map<K, V> map) {
         map.forEach(super::put);
     }
 
@@ -36,10 +37,10 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
 
     @Override
     protected void doPut(@Nonnull K key, @Nonnull V value) {
-        Node<K, V> oldValue = cache.get(key);
-        if (oldValue != null) {
-            oldValue.value = value;
-            adjustMRU(oldValue);
+        Node<K, V> existingValue = cache.get(key);
+        if (existingValue != null) {
+            existingValue.setValue(value);
+            updateMRU(existingValue);
         } else {
             Node<K, V> newMSU = new Node<>(key, value, mostRecentlyUsed);
             if (mostRecentlyUsed != null) mostRecentlyUsed.next = newMSU;
@@ -60,11 +61,12 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     }
 
     @Override
+    @Nullable
     protected V doGet(@Nonnull K key) {
         Node<K, V> res = cache.get(key);
         if (res == null) return null;
 
-        adjustMRU(res);
+        updateMRU(res);
 
         return res.value;
     }
@@ -107,15 +109,15 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     @Override
     protected V justGet(@Nonnull K key) {
         Node<K, V> res = cache.get(key);
-        return res == null ? null : res.value;
+        return res == null ? null : res.getValue();
     }
 
-    private void adjustMRU(Node<K, V> newMRU) {
-        if (newMRU.key == mostRecentlyUsed.key) {
+    private void updateMRU(Node<K, V> newMRU) {
+        if (newMRU == mostRecentlyUsed) {
             return;
         }
 
-        if (newMRU.key == leastRecentlyUsed.key) {
+        if (newMRU == leastRecentlyUsed) {
             newMRU.next.prev = null;
             leastRecentlyUsed = newMRU.next;
         } else {
@@ -135,7 +137,7 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
     }
 
     private static final class Node<K, V> {
-        private K key;
+        private final K key;
         private V value;
         private Node<K, V> prev;
         private Node<K, V> next;
@@ -146,6 +148,10 @@ public class SimpleLRUCache<K, V> extends AbstractLRUCache<K, V> implements LRUC
 
         private V getValue() {
             return value;
+        }
+
+        public void setValue(V value) {
+            this.value = value;
         }
 
         private Node(@Nonnull K key, @Nonnull V value, Node<K, V> prev) {

@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="softwareDesgin" />
         <module name="softwareDesign" />
+        <module name="software-design-homeworks" />
       </profile>
     </annotationProcessing>
   </component>
