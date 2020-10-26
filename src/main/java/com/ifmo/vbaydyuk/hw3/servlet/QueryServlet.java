@@ -23,12 +23,14 @@ public class QueryServlet extends HttpServlet {
         if ("max".equals(command)) {
             ServletCommon.doGoodies(response, (Statement stmt) -> {
                 ResultSet rs =
-                    stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
+                    stmt.executeQuery("SELECT * FROM PRODUCT " +
+                            "WHERE PRICE IN (SELECT MAX(PRICE) FROM PRODUCT)");
                 ServletCommon.dumpItems(response, rs, "Items with max price");});
         } else if ("min".equals(command)) {
             ServletCommon.doGoodies(response, (Statement stmt) -> {
                 ResultSet rs =
-                    stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
+                    stmt.executeQuery("SELECT * FROM PRODUCT " +
+                            "WHERE PRICE IN (SELECT MIN(PRICE) FROM PRODUCT)");
                 ServletCommon.dumpItems(response, rs, "Items with min price");});
         } else if ("sum".equals(command)) {
             ServletCommon.doGoodies(response, (Statement stmt) -> {
