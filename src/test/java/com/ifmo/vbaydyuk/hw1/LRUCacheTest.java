@@ -1,9 +1,6 @@
 package com.ifmo.vbaydyuk.hw1;
 
 import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
-import com.ifmo.vbaydyuk.hw1.AbstractLRUCache;
-import com.ifmo.vbaydyuk.hw1.LRUCache;
-import com.ifmo.vbaydyuk.hw1.SimpleLRUCache;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
