@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.ifmo.vbaydyuk.hw3.TestUtils.generateProducts;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
