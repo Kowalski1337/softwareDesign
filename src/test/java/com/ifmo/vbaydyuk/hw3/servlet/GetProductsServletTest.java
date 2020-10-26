@@ -1,4 +1,4 @@
-package com.ifmo.vbaydyuk.hw3;
+package com.ifmo.vbaydyuk.hw3.servlet;
 
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
@@ -7,13 +7,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.math.NumberUtils.isNumber;
 import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
@@ -48,16 +43,6 @@ public class GetProductsServletTest extends ServletTestBase {
         assertEquals(testProducts, getProducts());
     }
 
-    private static Map<String, Integer> generateProducts() {
-        Random random = new Random();
-        int count = 100 + random.nextInt(100);
-        String product = "Product";
-        AtomicInteger i = new AtomicInteger();
-        return Stream.generate(i::getAndIncrement)
-                .limit(count)
-                .map(number -> product + number)
-                .collect(Collectors.toMap(Function.identity(), p -> random.nextInt(1000)));
-    }
 
     private static Map<String, Integer> getProducts() {
         String response = getProductsResponse();
@@ -75,7 +60,7 @@ public class GetProductsServletTest extends ServletTestBase {
         return products;
     }
 
-    protected static String getProductsResponse() {
+    private static String getProductsResponse() {
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(SERVER_PATH + SERVER_PORT + GET_PRODUCTS);
         return restTemplate.getForObject(uriComponentsBuilder.toUriString(), String.class);

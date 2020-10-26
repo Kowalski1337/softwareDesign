@@ -1,9 +1,6 @@
-package com.ifmo.vbaydyuk.hw3;
+package com.ifmo.vbaydyuk.hw3.servlet;
 
 import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
-import com.ifmo.vbaydyuk.hw3.servlet.AddProductServlet;
-import com.ifmo.vbaydyuk.hw3.servlet.GetProductsServlet;
-import com.ifmo.vbaydyuk.hw3.servlet.QueryServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -17,7 +14,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author vbaydyuk
@@ -66,7 +67,7 @@ public class ServletTestBase {
         connection.close();
     }
 
-    ServletTestBase() {
+    public ServletTestBase() {
         try {
             connection = DriverManager.getConnection(JDBC_PATH);
             executeSql(CREATE_TABLE);
@@ -111,6 +112,17 @@ public class ServletTestBase {
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
         statement.close();
+    }
+
+    protected static Map<String, Integer> generateProducts() {
+        Random random = new Random();
+        int count = 100 + random.nextInt(100);
+        String product = "Product";
+        AtomicInteger i = new AtomicInteger();
+        return Stream.generate(i::getAndIncrement)
+                .limit(count)
+                .map(number -> product + number)
+                .collect(Collectors.toMap(Function.identity(), p -> random.nextInt(1000)));
     }
 
 }
