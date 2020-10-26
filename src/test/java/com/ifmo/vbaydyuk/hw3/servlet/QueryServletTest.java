@@ -2,6 +2,7 @@ package com.ifmo.vbaydyuk.hw3.servlet;
 
 import com.google.gwt.thirdparty.guava.common.collect.ImmutableList;
 import com.ifmo.vbaydyuk.hw3.Product;
+import com.ifmo.vbaydyuk.hw3.utils.HtmlGenerationUtils;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,26 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class QueryServletTest extends ServletTestBase {
 
-    private static final Pattern MAX_PATTERN = Pattern.compile("<html><body>\n" +
-            "<h1>Items with max price: </h1>\n" +
-            "(([^\t]+\t[0-9]+</br>\n)*)" +
-            "</body></html>\r\n");
-
-    private static final Pattern MIN_PATTERN = Pattern.compile("<html><body>\n" +
-            "<h1>Items with min price: </h1>\n" +
-            "(([^\t]+\t[0-9]+</br>\n)*)" +
-            "</body></html>\r\n");
-
-    private static final Pattern SUM_PATTERN = Pattern.compile("<html><body>\n" +
-            "Summary price: \n" +
-            "([0-9]+)\n" +
-            "</body></html>\r\n");
-
-    private static final Pattern COUNT_PATTERN = Pattern.compile("<html><body>\n" +
-            "Number of products: \n" +
-            "([0-9]+)\n" +
-            "</body></html>\r\n");
-
     private static final int MAX_PRICE = 1000;
     private static final int MIN_PRICE = 500;
     private static final int SOME_PRICE = 800;
@@ -60,7 +41,7 @@ public class QueryServletTest extends ServletTestBase {
                 .filter(e -> e.getPrice() == MAX_PRICE)
                 .collect(Collectors.toList());
         insertProducts(TEST_PRODUCTS);
-        assertEquals(max, getProducts(getQueryResponse(MAX), MAX_PATTERN));
+        assertEquals(max, getProducts(getQueryResponse(MAX), HtmlGenerationUtils.MAX_PATTERN));
     }
 
     @Test
@@ -70,7 +51,7 @@ public class QueryServletTest extends ServletTestBase {
                 .filter(e -> e.getPrice() == MIN_PRICE)
                 .collect(Collectors.toList());
         insertProducts(TEST_PRODUCTS);
-        assertEquals(min, getProducts(getQueryResponse(MIN), MIN_PATTERN));
+        assertEquals(min, getProducts(getQueryResponse(MIN), HtmlGenerationUtils.MIN_PATTERN));
     }
 
     @Test
@@ -80,14 +61,14 @@ public class QueryServletTest extends ServletTestBase {
                 .map(Product::getPrice)
                 .reduce(0L, Long::sum);
         insertProducts(TEST_PRODUCTS);
-        assertEquals(sum, getAggregatedValue(getQueryResponse(SUM), SUM_PATTERN));
+        assertEquals(sum, getAggregatedValue(getQueryResponse(SUM), HtmlGenerationUtils.SUM_PATTERN));
     }
 
     @Test
     public void testCount() {
         long count = TEST_PRODUCTS.size();
         insertProducts(TEST_PRODUCTS);
-        assertEquals(count, getAggregatedValue(getQueryResponse(COUNT), COUNT_PATTERN));
+        assertEquals(count, getAggregatedValue(getQueryResponse(COUNT), HtmlGenerationUtils.COUNT_PATTERN));
     }
 
     private static int getAggregatedValue(String response, Pattern pattern) {

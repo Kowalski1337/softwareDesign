@@ -3,6 +3,7 @@ package com.ifmo.vbaydyuk.hw3.servlet;
 import com.ifmo.vbaydyuk.hw3.DAOBasedTests;
 import com.ifmo.vbaydyuk.hw3.Product;
 import com.ifmo.vbaydyuk.hw3.dao.ProductsDAO;
+import com.ifmo.vbaydyuk.hw3.utils.HtmlGenerationUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -29,8 +30,6 @@ public class ServletTestBase implements DAOBasedTests {
     protected static final String ADD_PRODUCT = "/add-product";
     protected static final String GET_PRODUCTS = "/get-products";
     protected static final String QUERY = "/query";
-
-    protected static final Pattern PRODUCT_PATTERN = Pattern.compile("([^\t]+)\t([0-9]+)</br>\n");
 
     private final Server server;
     private final ProductsDAO productsDAO;
@@ -84,7 +83,7 @@ public class ServletTestBase implements DAOBasedTests {
         Matcher getProductMatcher = pattern.matcher(response);
         assertTrue(getProductMatcher.matches());
         String productsGroup = getProductMatcher.group(1);
-        Matcher productMatcher = PRODUCT_PATTERN.matcher(productsGroup);
+        Matcher productMatcher = HtmlGenerationUtils.PRODUCT_PATTERN.matcher(productsGroup);
         List<Product> products = new ArrayList<>();
         while (productMatcher.find()) {
             String name = productMatcher.group(1);

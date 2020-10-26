@@ -2,12 +2,12 @@ package com.ifmo.vbaydyuk.hw3.servlet;
 
 import com.google.gwt.thirdparty.guava.common.collect.ImmutableList;
 import com.ifmo.vbaydyuk.hw3.Product;
+import com.ifmo.vbaydyuk.hw3.utils.HtmlGenerationUtils;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.ifmo.vbaydyuk.hw3.TestUtils.generateProducts;
 import static org.hamcrest.Matchers.empty;
@@ -16,10 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class GetProductsServletTest extends ServletTestBase {
-    private static final Pattern GET_PRODUCTS_PATTERN = Pattern.compile("<html><body>\n" +
-            "<h1>All items that we have: </h1>\n" +
-            "(([^\t]+\t[0-9]+</br>\n)*)" +
-            "</body></html>\r\n");
     private static final List<Product> TEST_PRODUCTS = ImmutableList.of(
             new Product("Product1", 1000),
             new Product("Product2", 500)
@@ -44,7 +40,7 @@ public class GetProductsServletTest extends ServletTestBase {
     }
 
     private static List<Product> getProducts() {
-        return getProducts(getProductsResponse(), GET_PRODUCTS_PATTERN);
+        return getProducts(getProductsResponse(), HtmlGenerationUtils.GET_PRODUCTS_PATTERN);
     }
 
     private static String getProductsResponse() {
