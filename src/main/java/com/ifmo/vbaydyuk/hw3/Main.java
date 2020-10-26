@@ -1,11 +1,11 @@
 package com.ifmo.vbaydyuk.hw3;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import com.ifmo.vbaydyuk.hw3.servlet.AddProductServlet;
 import com.ifmo.vbaydyuk.hw3.servlet.GetProductsServlet;
 import com.ifmo.vbaydyuk.hw3.servlet.QueryServlet;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,8 +34,8 @@ public class Main {
         server.setHandler(context);
 
         context.addServlet(new ServletHolder(new AddProductServlet()), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet()),"/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet()),"/query");
+        context.addServlet(new ServletHolder(new GetProductsServlet()), "/get-products");
+        context.addServlet(new ServletHolder(new QueryServlet()), "/query");
 
         server.start();
         server.join();
