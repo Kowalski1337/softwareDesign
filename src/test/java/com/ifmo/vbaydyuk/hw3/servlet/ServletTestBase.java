@@ -11,11 +11,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -92,20 +91,20 @@ public class ServletTestBase {
         return server;
     }
 
-    protected void insertProducts(Map<String, Integer> products) throws SQLException {
-        String values = products.entrySet()
+    protected void insertProducts(List<Product> products) throws SQLException {
+        String values = products
                 .stream()
-                .map(e -> "(\"" + e.getKey() + "\"," + e.getValue() + ")")
+                .map(e -> "(\"" + e.getName() + "\"," + e.getPrice() + ")")
                 .collect(Collectors.joining(","));
         executeSql(INSERT + values);
     }
 
-    protected Map<String, Integer> getProductsDB() throws SQLException {
+    protected List<Product> getProductsDB() throws SQLException {
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery(SELECT);
-        Map<String, Integer> ans = new HashMap<>();
+        List<Product> ans = new ArrayList<>();
         while (result.next()) {
-            ans.put(result.getString("name"), result.getInt("price"));
+            ans.add(new Product(result.getString("name"), result.getInt("price")));
         }
         return ans;
     }
@@ -116,28 +115,28 @@ public class ServletTestBase {
         statement.close();
     }
 
-    protected static Map<String, Integer> generateProducts() {
+    protected static List<Product> generateProducts() {
         Random random = new Random();
         int count = 100 + random.nextInt(100);
         String product = "Product";
         AtomicInteger i = new AtomicInteger();
         return Stream.generate(i::getAndIncrement)
                 .limit(count)
-                .map(number -> product + number)
-                .collect(Collectors.toMap(Function.identity(), p -> random.nextInt(1000)));
+                .map(number -> new Product(product + number, random.nextInt(1000)))
+                .collect(Collectors.toList());
     }
 
-    protected static Map<String, Integer> getProducts(String response, Pattern pattern) {
+    protected static List<Product> getProducts(String response, Pattern pattern) {
         Matcher getProductMatcher = pattern.matcher(response);
         assertTrue(getProductMatcher.matches());
         String productsGroup = getProductMatcher.group(1);
         Matcher productMatcher = PRODUCT_PATTERN.matcher(productsGroup);
-        Map<String, Integer> products = new HashMap<>();
+        List<Product> products = new ArrayList<>();
         while (productMatcher.find()) {
             String name = productMatcher.group(1);
             String price = productMatcher.group(2);
             assertTrue(isNumber(price));
-            products.put(name, Integer.parseInt(price));
+            products.add(new Product(name, Integer.parseInt(price)));
         }
         return products;
     }

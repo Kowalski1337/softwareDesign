@@ -1,12 +1,12 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
-import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
+import com.google.gwt.thirdparty.guava.common.collect.ImmutableList;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,12 +40,12 @@ public class QueryServletTest extends ServletTestBase {
     private static final int MAX_PRICE = 1000;
     private static final int MIN_PRICE = 500;
     private static final int SOME_PRICE = 800;
-    private static final Map<String, Integer> TEST_PRODUCTS = ImmutableMap.of(
-            "Product1", MIN_PRICE,
-            "Product2", MIN_PRICE,
-            "Product3", MAX_PRICE,
-            "Product5", MAX_PRICE,
-            "Product4", SOME_PRICE
+    private static final List<Product> TEST_PRODUCTS = ImmutableList.of(
+            new Product("Product1", MIN_PRICE),
+            new Product("Product2", MIN_PRICE),
+            new Product("Product3", MAX_PRICE),
+            new Product("Product5", MAX_PRICE),
+            new Product("Product4", SOME_PRICE)
     );
 
     private static final String COMMAND = "command";
@@ -55,42 +55,39 @@ public class QueryServletTest extends ServletTestBase {
 
     @Test
     public void testMax() throws SQLException {
-        Map<String, Integer> maxMap = TEST_PRODUCTS
-                .entrySet()
+        List<Product> max = TEST_PRODUCTS
                 .stream()
-                .filter(e -> e.getValue().equals(MAX_PRICE))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .filter(e -> e.getPrice() == MAX_PRICE)
+                .collect(Collectors.toList());
         insertProducts(TEST_PRODUCTS);
-        assertEquals(maxMap, getProducts(getQueryResponse(MAX), MAX_PATTERN));
+        assertEquals(max, getProducts(getQueryResponse(MAX), MAX_PATTERN));
     }
 
     @Test
     public void testMin() throws SQLException {
-        Map<String, Integer> minMap = TEST_PRODUCTS
-                .entrySet()
+        List<Product> min = TEST_PRODUCTS
                 .stream()
-                .filter(e -> e.getValue().equals(MIN_PRICE))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .filter(e -> e.getPrice() == MIN_PRICE)
+                .collect(Collectors.toList());
         insertProducts(TEST_PRODUCTS);
-        assertEquals(minMap, getProducts(getQueryResponse(MIN), MIN_PATTERN));
+        assertEquals(min, getProducts(getQueryResponse(MIN), MIN_PATTERN));
     }
 
     @Test
     public void testSum() throws SQLException {
-        int ans = TEST_PRODUCTS
-                .values()
+        int sum = TEST_PRODUCTS
                 .stream()
+                .map(Product::getPrice)
                 .reduce(0, Integer::sum);
         insertProducts(TEST_PRODUCTS);
-        assertEquals(ans, getAggregatedValue(getQueryResponse(SUM), SUM_PATTERN));
+        assertEquals(sum, getAggregatedValue(getQueryResponse(SUM), SUM_PATTERN));
     }
 
     @Test
     public void testCount() throws SQLException {
-        int ans = TEST_PRODUCTS
-                .size();
+        int count = TEST_PRODUCTS.size();
         insertProducts(TEST_PRODUCTS);
-        assertEquals(ans, getAggregatedValue(getQueryResponse("count"), COUNT_PATTERN));
+        assertEquals(count, getAggregatedValue(getQueryResponse("count"), COUNT_PATTERN));
     }
 
     private static int getAggregatedValue(String response, Pattern pattern) {

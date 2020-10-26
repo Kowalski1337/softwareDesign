@@ -1,15 +1,16 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
-import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
+import com.google.gwt.thirdparty.guava.common.collect.ImmutableList;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.List;
 import java.util.regex.Pattern;
 
-import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -18,14 +19,14 @@ public class GetProductsServletTest extends ServletTestBase {
             "<h1>All items that we have: </h1>\r\n" +
             "(([^\t]+\t[0-9]+</br>\r\n)*)" +
             "</body></html>\r\n");
-    private static final Map<String, Integer> TEST_PRODUCTS = ImmutableMap.of(
-            "Product1", 1000,
-            "Product2", 500
+    private static final List<Product> TEST_PRODUCTS = ImmutableList.of(
+            new Product("Product1", 1000),
+            new Product("Product2", 500)
     );
 
     @Test
     public void testGetProductsEmptyData() {
-        assertThat(getProducts(), anEmptyMap());
+        assertThat(getProducts(), is(empty()));
     }
 
     @Test
@@ -36,12 +37,12 @@ public class GetProductsServletTest extends ServletTestBase {
 
     @Test
     public void testGetProductsRandomData() throws SQLException {
-        Map<String, Integer> testProducts = generateProducts();
+        List<Product> testProducts = generateProducts();
         insertProducts(testProducts);
         assertEquals(testProducts, getProducts());
     }
 
-    private static Map<String, Integer> getProducts() {
+    private static List<Product> getProducts() {
         return getProducts(getProductsResponse(), GET_PRODUCTS_PATTERN);
     }
 
