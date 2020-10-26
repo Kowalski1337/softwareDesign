@@ -1,29 +1,27 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
+import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.apache.commons.lang3.math.NumberUtils.isNumber;
 import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GetProductsServletTest extends ServletTestBase {
     private static final Pattern GET_PRODUCTS_PATTERN = Pattern.compile("<html><body>\r\n" +
             "<h1>All items that we have: </h1>\r\n" +
             "(([^\t]+\t[0-9]+</br>\r\n)*)" +
             "</body></html>\r\n");
-    private static final String PRODUCT_MATCHER = "([^\t]+)\t([0-9]+)</br>\r\n";
-    private static final Pattern PRODUCT_PATTERN = Pattern.compile(PRODUCT_MATCHER);
-
+    private static final Map<String, Integer> TEST_PRODUCTS = ImmutableMap.of(
+            "Product1", 1000,
+            "Product2", 500
+    );
 
     @Test
     public void testGetProductsEmptyData() {
@@ -43,22 +41,10 @@ public class GetProductsServletTest extends ServletTestBase {
         assertEquals(testProducts, getProducts());
     }
 
-
     private static Map<String, Integer> getProducts() {
-        String response = getProductsResponse();
-        Matcher getProductMatcher = GET_PRODUCTS_PATTERN.matcher(response);
-        assertTrue(getProductMatcher.matches());
-        String productsGroup = getProductMatcher.group(1);
-        Matcher productMatcher = PRODUCT_PATTERN.matcher(productsGroup);
-        Map<String, Integer> products = new HashMap<>();
-        while (productMatcher.find()) {
-            String name = productMatcher.group(1);
-            String price = productMatcher.group(2);
-            assertTrue(isNumber(price));
-            products.put(name, Integer.parseInt(price));
-        }
-        return products;
+        return getProducts(getProductsResponse(), GET_PRODUCTS_PATTERN);
     }
+
 
     private static String getProductsResponse() {
         RestTemplate restTemplate = new RestTemplate();

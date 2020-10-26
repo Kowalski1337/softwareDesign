@@ -1,6 +1,5 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
-import com.google.gwt.thirdparty.guava.common.collect.ImmutableMap;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -17,8 +16,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.apache.commons.lang3.math.NumberUtils.isNumber;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author vbaydyuk
@@ -39,10 +43,8 @@ public class ServletTestBase {
     protected static final String ADD_PRODUCT = "/add-product";
     protected static final String GET_PRODUCTS = "/get-products";
     protected static final String QUERY = "/query";
-    protected static final Map<String, Integer> TEST_PRODUCTS = ImmutableMap.of(
-            "Product1", 1000,
-            "Product2", 500
-    );
+
+    protected static final Pattern PRODUCT_PATTERN = Pattern.compile("([^\t]+)\t([0-9]+)</br>\r\n");
 
     private final Server server;
     private final Connection connection;
@@ -123,6 +125,21 @@ public class ServletTestBase {
                 .limit(count)
                 .map(number -> product + number)
                 .collect(Collectors.toMap(Function.identity(), p -> random.nextInt(1000)));
+    }
+
+    protected static Map<String, Integer> getProducts(String response, Pattern pattern) {
+        Matcher getProductMatcher = pattern.matcher(response);
+        assertTrue(getProductMatcher.matches());
+        String productsGroup = getProductMatcher.group(1);
+        Matcher productMatcher = PRODUCT_PATTERN.matcher(productsGroup);
+        Map<String, Integer> products = new HashMap<>();
+        while (productMatcher.find()) {
+            String name = productMatcher.group(1);
+            String price = productMatcher.group(2);
+            assertTrue(isNumber(price));
+            products.put(name, Integer.parseInt(price));
+        }
+        return products;
     }
 
 }
