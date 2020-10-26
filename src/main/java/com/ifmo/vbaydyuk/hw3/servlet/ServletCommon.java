@@ -4,6 +4,7 @@ import com.ifmo.vbaydyuk.hw3.Product;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -12,14 +13,15 @@ import java.util.List;
 public class ServletCommon {
     public static void dumpItems(HttpServletResponse response, List<Product> products, String title) {
         try {
-            response.getWriter().println("<html><body>");
-            response.getWriter().println("<h1>" + title + ": </h1>");
+            PrintWriter writer = response.getWriter();
+            writer.println("<html><body>");
+            writer.println("<h1>" + title + ": </h1>");
             for (Product product : products) {
                 String name = product.getName();
                 long price = product.getPrice();
-                response.getWriter().println(name + "\t" + price + "</br>");
+                writer.println(name + "\t" + price + "</br>");
             }
-            response.getWriter().println("</body></html>");
+            writer.println("</body></html>");
         } catch (IOException e) {
             throw new IllegalStateException("Cannot write response", e);
         }

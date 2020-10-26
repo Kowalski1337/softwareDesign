@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author akirakozov
@@ -32,17 +33,19 @@ public class QueryServlet extends HttpServlet {
             ServletCommon.doGoodies(response);
         } else if ("sum".equals(command)) {
             Long sum = productsDAO.getSum();
-            response.getWriter().println("<html><body>");
-            response.getWriter().println("Summary price: ");
-            if (sum != null) response.getWriter().println(sum);
-            response.getWriter().println("</body></html>");
+            PrintWriter writer = response.getWriter();
+            writer.println("<html><body>");
+            writer.println("Summary price: ");
+            if (sum != null) writer.println(sum);
+            writer.println("</body></html>");
             ServletCommon.doGoodies(response);
         } else if ("count".equals(command)) {
             Long count = productsDAO.getCount();
-            response.getWriter().println("<html><body>");
-            response.getWriter().println("Number of products: ");
-            if (count != null) response.getWriter().println(count);
-            response.getWriter().println("</body></html>");
+            PrintWriter writer = response.getWriter();
+            writer.println("<html><body>");
+            writer.println("Number of products: ");
+            if (count != null) writer.println(count);
+            writer.println("</body></html>");
             ServletCommon.doGoodies(response);
         } else {
             response.getWriter().println("Unknown command: " + command);
