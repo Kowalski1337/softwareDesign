@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class GetProductsServlet extends AbstractServlet {
 
+    public static final String TITLE = "All items that we have";
+
     public GetProductsServlet(ProductsDAO productsDAO) {
         super(productsDAO);
     }
 
     @Override
     protected String getResponseContent(HttpServletRequest request) {
-        return generateItemsResponse(productsDAO.getAllProducts(), "All items that we have");
+        return generateItemsResponse(productsDAO.getAllProducts(), TITLE);
     }
 }

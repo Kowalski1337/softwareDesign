@@ -11,14 +11,17 @@ import java.util.Collections;
  */
 public class AddProductServlet extends AbstractServlet {
 
+    public static final String NAME = "name";
+    public static final String PRICE = "price";
+
     public AddProductServlet(ProductsDAO productsDAO) {
         super(productsDAO);
     }
 
     @Override
     protected String getResponseContent(HttpServletRequest request) {
-        String name = request.getParameter("name");
-        long price = Long.parseLong(request.getParameter("price"));
+        String name = request.getParameter(NAME);
+        long price = Long.parseLong(request.getParameter(PRICE));
         productsDAO.insertProducts(Collections.singletonList(new Product(name, price)));
         return "OK";
     }

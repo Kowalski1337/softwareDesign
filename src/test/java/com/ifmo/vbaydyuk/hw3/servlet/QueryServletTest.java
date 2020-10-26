@@ -11,6 +11,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.ifmo.vbaydyuk.hw3.servlet.QueryServlet.COMMAND;
+import static com.ifmo.vbaydyuk.hw3.servlet.QueryServlet.COUNT;
+import static com.ifmo.vbaydyuk.hw3.servlet.QueryServlet.MAX;
+import static com.ifmo.vbaydyuk.hw3.servlet.QueryServlet.MIN;
+import static com.ifmo.vbaydyuk.hw3.servlet.QueryServlet.SUM;
 import static org.apache.commons.lang3.math.NumberUtils.isNumber;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,11 +53,6 @@ public class QueryServletTest extends ServletTestBase {
             new Product("Product4", SOME_PRICE)
     );
 
-    private static final String COMMAND = "command";
-    public static final String MAX = "max";
-    public static final String MIN = "min";
-    public static final String SUM = "sum";
-
     @Test
     public void testMax() {
         List<Product> max = TEST_PRODUCTS
@@ -87,7 +87,7 @@ public class QueryServletTest extends ServletTestBase {
     public void testCount() {
         long count = TEST_PRODUCTS.size();
         insertProducts(TEST_PRODUCTS);
-        assertEquals(count, getAggregatedValue(getQueryResponse("count"), COUNT_PATTERN));
+        assertEquals(count, getAggregatedValue(getQueryResponse(COUNT), COUNT_PATTERN));
     }
 
     private static int getAggregatedValue(String response, Pattern pattern) {

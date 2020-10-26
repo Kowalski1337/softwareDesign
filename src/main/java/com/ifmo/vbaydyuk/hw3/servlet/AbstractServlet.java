@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class AbstractServlet extends HttpServlet {
+    public static final String CONTENT_TYPE = "text/html";
     protected final ProductsDAO productsDAO;
 
     protected AbstractServlet(ProductsDAO productsDAO) {
@@ -18,7 +19,7 @@ public abstract class AbstractServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
+        response.setContentType(CONTENT_TYPE);
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println(getResponseContent(request));
     }
