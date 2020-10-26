@@ -1,10 +1,10 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
+import com.ifmo.vbaydyuk.hw3.Product;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.hamcrest.Matchers.contains;
@@ -18,13 +18,13 @@ public class AddProductServletTest extends ServletTestBase {
     public static final String OK = "OK\r\n";
 
     @Test
-    public void testAddProduct() throws SQLException {
+    public void testAddProduct() {
         addProduct(TEST_PRODUCT);
         assertThat(getProductsDB(), contains(TEST_PRODUCT));
     }
 
     @Test
-    public void testAddRandomProducts() throws SQLException {
+    public void testAddRandomProducts() {
         List<Product> products = generateProducts();
         products.forEach(AddProductServletTest::addProduct);
         assertEquals(products, getProductsDB());

@@ -1,6 +1,7 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
 import com.google.gwt.thirdparty.guava.common.collect.ImmutableList;
+import com.ifmo.vbaydyuk.hw3.Product;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,13 +31,13 @@ public class GetProductsServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testGetProducts() throws SQLException {
+    public void testGetProducts() {
         insertProducts(TEST_PRODUCTS);
         assertEquals(TEST_PRODUCTS, getProducts());
     }
 
     @Test
-    public void testGetProductsRandomData() throws SQLException {
+    public void testGetProductsRandomData() {
         List<Product> testProducts = generateProducts();
         insertProducts(testProducts);
         assertEquals(testProducts, getProducts());

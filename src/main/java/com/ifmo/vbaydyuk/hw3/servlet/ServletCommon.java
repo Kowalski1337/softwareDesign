@@ -1,39 +1,31 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
+import com.ifmo.vbaydyuk.hw3.Product;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 
 /**
  * @author volhovm
  */
 public class ServletCommon {
-    public static void dumpItems(HttpServletResponse response, ResultSet rs, String title) throws IOException, SQLException {
-        response.getWriter().println("<html><body>");
-        response.getWriter().println("<h1>" + title + ": </h1>");
-        while (rs.next()) {
-            String name = rs.getString("name");
-            int price = rs.getInt("price");
-            response.getWriter().println(name + "\t" + price + "</br>");
+    public static void dumpItems(HttpServletResponse response, List<Product> products, String title) {
+        try {
+            response.getWriter().println("<html><body>");
+            response.getWriter().println("<h1>" + title + ": </h1>");
+            for (Product product : products) {
+                String name = product.getName();
+                long price = product.getPrice();
+                response.getWriter().println(name + "\t" + price + "</br>");
+            }
+            response.getWriter().println("</body></html>");
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot write response", e);
         }
-        response.getWriter().println("</body></html>");
     }
 
-    public static void doGoodies(HttpServletResponse response, DBHandler<Statement> handler) {
-        try {
-            try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                Statement stmt = c.createStatement();
-                handler.apply(stmt);
-                stmt.close();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+    public static void doGoodies(HttpServletResponse response) {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
     }

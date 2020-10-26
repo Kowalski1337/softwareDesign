@@ -1,11 +1,11 @@
 package com.ifmo.vbaydyuk.hw3.servlet;
 
 import com.google.gwt.thirdparty.guava.common.collect.ImmutableList;
+import com.ifmo.vbaydyuk.hw3.Product;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +54,7 @@ public class QueryServletTest extends ServletTestBase {
     public static final String SUM = "sum";
 
     @Test
-    public void testMax() throws SQLException {
+    public void testMax() {
         List<Product> max = TEST_PRODUCTS
                 .stream()
                 .filter(e -> e.getPrice() == MAX_PRICE)
@@ -64,7 +64,7 @@ public class QueryServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testMin() throws SQLException {
+    public void testMin() {
         List<Product> min = TEST_PRODUCTS
                 .stream()
                 .filter(e -> e.getPrice() == MIN_PRICE)
@@ -74,18 +74,18 @@ public class QueryServletTest extends ServletTestBase {
     }
 
     @Test
-    public void testSum() throws SQLException {
-        int sum = TEST_PRODUCTS
+    public void testSum() {
+        long sum = TEST_PRODUCTS
                 .stream()
                 .map(Product::getPrice)
-                .reduce(0, Integer::sum);
+                .reduce(0L, Long::sum);
         insertProducts(TEST_PRODUCTS);
         assertEquals(sum, getAggregatedValue(getQueryResponse(SUM), SUM_PATTERN));
     }
 
     @Test
-    public void testCount() throws SQLException {
-        int count = TEST_PRODUCTS.size();
+    public void testCount() {
+        long count = TEST_PRODUCTS.size();
         insertProducts(TEST_PRODUCTS);
         assertEquals(count, getAggregatedValue(getQueryResponse("count"), COUNT_PATTERN));
     }
