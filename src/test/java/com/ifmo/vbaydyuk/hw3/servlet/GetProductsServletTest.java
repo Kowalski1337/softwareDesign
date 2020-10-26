@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class GetProductsServletTest extends ServletTestBase {
-    private static final Pattern GET_PRODUCTS_PATTERN = Pattern.compile("<html><body>\r\n" +
-            "<h1>All items that we have: </h1>\r\n" +
-            "(([^\t]+\t[0-9]+</br>\r\n)*)" +
+    private static final Pattern GET_PRODUCTS_PATTERN = Pattern.compile("<html><body>\n" +
+            "<h1>All items that we have: </h1>\n" +
+            "(([^\t]+\t[0-9]+</br>\n)*)" +
             "</body></html>\r\n");
     private static final List<Product> TEST_PRODUCTS = ImmutableList.of(
             new Product("Product1", 1000),
@@ -46,7 +46,6 @@ public class GetProductsServletTest extends ServletTestBase {
     private static List<Product> getProducts() {
         return getProducts(getProductsResponse(), GET_PRODUCTS_PATTERN);
     }
-
 
     private static String getProductsResponse() {
         RestTemplate restTemplate = new RestTemplate();

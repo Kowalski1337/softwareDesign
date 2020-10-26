@@ -30,7 +30,7 @@ public class ServletTestBase implements DAOBasedTests {
     protected static final String GET_PRODUCTS = "/get-products";
     protected static final String QUERY = "/query";
 
-    protected static final Pattern PRODUCT_PATTERN = Pattern.compile("([^\t]+)\t([0-9]+)</br>\r\n");
+    protected static final Pattern PRODUCT_PATTERN = Pattern.compile("([^\t]+)\t([0-9]+)</br>\n");
 
     private final Server server;
     private final ProductsDAO productsDAO;

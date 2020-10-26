@@ -17,24 +17,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class QueryServletTest extends ServletTestBase {
 
-    private static final Pattern MAX_PATTERN = Pattern.compile("<html><body>\r\n" +
-            "<h1>Items with max price: </h1>\r\n" +
-            "(([^\t]+\t[0-9]+</br>\r\n)*)" +
+    private static final Pattern MAX_PATTERN = Pattern.compile("<html><body>\n" +
+            "<h1>Items with max price: </h1>\n" +
+            "(([^\t]+\t[0-9]+</br>\n)*)" +
             "</body></html>\r\n");
 
-    private static final Pattern MIN_PATTERN = Pattern.compile("<html><body>\r\n" +
-            "<h1>Items with min price: </h1>\r\n" +
-            "(([^\t]+\t[0-9]+</br>\r\n)*)" +
+    private static final Pattern MIN_PATTERN = Pattern.compile("<html><body>\n" +
+            "<h1>Items with min price: </h1>\n" +
+            "(([^\t]+\t[0-9]+</br>\n)*)" +
             "</body></html>\r\n");
 
-    private static final Pattern SUM_PATTERN = Pattern.compile("<html><body>\r\n" +
-            "Summary price: \r\n" +
-            "([0-9]+)\r\n" +
+    private static final Pattern SUM_PATTERN = Pattern.compile("<html><body>\n" +
+            "Summary price: \n" +
+            "([0-9]+)\n" +
             "</body></html>\r\n");
 
-    private static final Pattern COUNT_PATTERN = Pattern.compile("<html><body>\r\n" +
-            "Number of products: \r\n" +
-            "([0-9]+)\r\n" +
+    private static final Pattern COUNT_PATTERN = Pattern.compile("<html><body>\n" +
+            "Number of products: \n" +
+            "([0-9]+)\n" +
             "</body></html>\r\n");
 
     private static final int MAX_PRICE = 1000;
