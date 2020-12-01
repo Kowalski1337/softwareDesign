@@ -10,13 +10,15 @@
         <module name="hw1" />
         <module name="softwareDesgin" />
         <module name="hw3" />
+        <module name="hw6" />
         <module name="hw5" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="hw5" options="-parameters --add-exports java.xml/jdk.xml.internal=ALL-UNNAMED" />
+      <module name="hw5" options="-parameters" />
+      <module name="hw6" options="-parameters" />
     </option>
   </component>
 </project>
