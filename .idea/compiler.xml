@@ -9,6 +9,7 @@
         <module name="hw2" />
         <module name="hw1" />
         <module name="softwareDesgin" />
+        <module name="hw4" />
         <module name="hw3" />
         <module name="hw5" />
       </profile>
@@ -16,7 +17,8 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="hw5" options="-parameters --add-exports java.xml/jdk.xml.internal=ALL-UNNAMED" />
+      <module name="hw4" options="-parameters" />
+      <module name="hw5" options="-parameters" />
     </option>
   </component>
 </project>
