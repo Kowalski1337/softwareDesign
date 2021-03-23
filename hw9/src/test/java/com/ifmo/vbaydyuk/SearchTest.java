@@ -67,7 +67,7 @@ public class SearchTest {
 
     @Test
     public void testDifferentDelays() {
-        simulator.withDelay(SearchEngine.YANDEX, 100);
+        simulator.withDelay(SearchEngine.YANDEX, 50);
         simulator.withDelay(SearchEngine.BING, 1000);
         test(10);
     }
