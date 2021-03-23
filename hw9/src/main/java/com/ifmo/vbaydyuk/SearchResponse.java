@@ -49,11 +49,4 @@ public class SearchResponse {
         }
     }
 
-    public static SearchResponse fromJSON(JSONArray responseJSON, SearchEngine engine) throws JSONException {
-        List<SingleResponse> results = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            results.add(SingleResponse.from(responseJSON.get(i)));
-        }
-        return new SearchResponse(results, engine);
-    }
 }
